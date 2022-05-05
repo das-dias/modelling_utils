@@ -1,0 +1,107 @@
+% Options for packages loaded elsewhere  
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  sigconf]{IEEEtran}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={A Capacitively Degenerated, Temperature-Compensated Class-AB  Parametric Residue Amplifier for SAR-Assisted Pipeline ADCs},
+  pdfkeywords={residue amplifier, capacitive degeneration
+technique, analog-to-digital converter
+(ADC), successive-approximations-register (SAR) ADC, pipeline
+ADC, temperature compensation},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+  \title{A Capacitively Degenerated, Temperature-Compensated Class-AB \\
+Parametric Residue Amplifier for SAR-Assisted Pipeline ADCs
+    }
+
+%\author{true}
+\author{
+            \IEEEauthorblockN{Diogo André S. Dias},
+      \\
+        \IEEEauthorblockA{
+                      \textit{Electrical and Computers
+Eng.} Department\\
+                                \textit{School of Science \& Technology,
+NOVA University of Lisbon}\\
+                                Monte da Caparica, Almada,
+                                Portugal
+                                              \\\textit{https://orcid.org/0000-0002-3150-3810}
+                              }
+      
+        \and
+  }
+\date{}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This is an abstractooo\ldots{}
+\end{abstract}
+\begin{IEEEkeywords} 
+      residue amplifier, 
+      capacitive degeneration technique, 
+      analog-to-digital converter (ADC), 
+      successive-approximations-register (SAR) ADC, 
+      pipeline ADC, 
+      temperature compensation\end{IEEEkeywords}
+
+
+
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+This is a simple introduction.
+
+\hypertarget{sub}{%
+\subsection{Sub}\label{sub}}
+
+This is a sub-section\ldots{}
+
+  \bibliography{bibliography.bib}
+
+\end{document}

@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "amplifier_modelling"
+version = "0.1.0"
+description = "Python scripts for modelling a 8x Gain, temperature-insensitive Residue Amplifier"
+authors = ["Diogo André <das.dias6@gmail.com>"]
+license = "MIT"
+repository = ""
+keywords = ["residue-amplifier", "modelling", "analog-ic","python", "adc"]
+
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.11" # limitted version due to scipy
+numpy = "^1.22.3" # numerical framework for efficient float array manipulation
+scipy = "^1.8.0" # scientific framework for python
+PyYAML = "^6.0" # YAML parser
+matplotlib = "^3.5.2" # graph plotting
+loguru = "^0.6.0" # logging into console
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+unittest = "^0.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
