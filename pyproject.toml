@@ -15,6 +15,7 @@ scipy = "^1.8.0" # scientific framework for python
 PyYAML = "^6.0" # YAML parser
 matplotlib = "^3.5.2" # graph plotting
 loguru = "^0.6.0" # logging into console
+seaborn = "^0.11.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
