@@ -326,7 +326,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11" # limitted version due to scipy
-content-hash = "3cf7c64bf66a7444597276e3508ea5e07aa9fb98d38b8f45c57e5d455b330bd2"
+content-hash = "22d14a1d3cd25a27cd06a555dbcfce159d3fd95ebf2566cbbc1bae4442f242ad"
 
 [metadata.files]
 atomicwrites = [
