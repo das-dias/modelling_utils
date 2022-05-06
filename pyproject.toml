@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "modelling_utils"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python scripts for modelling a 8x Gain, temperature-insensitive Residue Amplifier"
 authors = ["Diogo André <das.dias6@gmail.com>"]
 license = "MIT"
@@ -27,4 +27,4 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [packages]
-amplifier_modelling = "**/*.py"
+modelling_utils = "**/*.py"
