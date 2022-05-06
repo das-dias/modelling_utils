@@ -4,7 +4,7 @@ version = "0.1.2"
 description = " Utility functions and data structure for aiding in Analog Integrated Circuit Modelling using Python"
 authors = ["Diogo André <das.dias6@gmail.com>"]
 license = "MIT"
-repository = ""
+repository = "https://github.com/das-dias/modelling_utils"
 keywords = ["modelling", "analog-ic","python"]
 
 [tool.poetry.dependencies]
