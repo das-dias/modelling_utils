@@ -1,2 +1,0 @@
-# Design Report
-This directory ```/docs``` holds the report documenting the design's objectives, methods, results and conclusions. All the files contained in this directory are either components or products of the ```pandoc``` tool's generation process of the ```main.pdf``` file containing the draft of the article related with the presented design.

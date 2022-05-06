@@ -56,5 +56,16 @@ class TestModellingFramework(unittest.TestCase):
         plot_function(x=x2, y=y2, z=z2, labels=["3D func"], xlabel="abciss", ylabel="ordinate", title="A 3D plot", type="wireframe", filename="wireframe3d.png")
         self.assertTrue(True)
 
+    def test_histogram(self):
+        x = np.random.randn(100)
+        plot_hist(data=x, labels=["histogram"], xlabel="random val", title="Simple Histogram", show=True, filename="hist.png")
+        xx = [
+            np.random.randn(100),
+            np.random.randn(100),
+            np.random.randn(100)
+        ]
+        plot_hist(data=xx, labels=["rand1","rand2","rand3"], xlabel="random val", title="Triple Histogram", show=True, filename="hist2.png")
+        self.assertTrue(True)
+        
 if __name__ == "__main__":
     unittest.main()

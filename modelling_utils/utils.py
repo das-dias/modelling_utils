@@ -303,7 +303,7 @@ def plot_function(
         )
 
 @timer
-def plot_hist(data, labels: list=[], title: str=None, filename: str=None, show:bool=False):
+def plot_hist(data, labels: list=[], xlabel: str=None, title: str=None, filename: str=None, show:bool=False, stat: str="probability"):
     """_summary_
     Plots a histogram of the data
     Args:
@@ -323,21 +323,37 @@ def plot_hist(data, labels: list=[], title: str=None, filename: str=None, show:b
     
     if isinstance(data, np.ndarray):
         sns.histplot(
-            data, 
-            x = labels[0] if len(labels)>0 else None,
-            binwidth = 0.05
-        )
+            data=data,
+            kde=True,
+            binwidth = 0.05,
+            stat=stat,
+        ).set_xlabel(xlabel)
     elif isinstance(data, list):
         if len(labels) not in [len(data), 0]:
             raise ValueError("Labels and data must have the same length")
         
         if not all([isinstance(v, np.ndarray) for v in data]):
             raise ValueError("data must be a list of numpy.ndarray")
-    
-        sns.histplot( data, hue=labels, binwidth=0.05)
+        dt = data
+        if len(labels) != 0:
+            dt = {label: v for label, v in zip(labels, data)}
+        colours = [
+            "#000000",
+            "#D84242",
+            "#4131F0",
+            "#FF0000",
+            "#D80AD0"
+        ]
+        sns.histplot( 
+            data=dt, 
+            kde=True, 
+            binwidth=0.05,
+            legend=True, 
+            stat=stat,
+            palette=[c for c,_ in zip(itertools.cycle(colours), dt.keys())]
+        ).set_xlabel(xlabel)
     else:
         raise TypeError("data must be a numpy.ndarray or a list of numpy.ndarray")
-    
     if bool(title):
         plt.title(title)
     if bool(filename):
