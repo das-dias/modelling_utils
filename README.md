@@ -1,23 +1,14 @@
-# 8x Gain, Temperature-Insensitive Residue Amplifier Modelling
+# Utilities package for Analog Integrated Circuit Modelling
 
 This repository features ```Python®``` scripts used for performing the modelling and initial theoretical approach to the development of analogue integrated circuits. Convetinally, scientists and engineers use ```MATLAB®``` to develop models of the system they're implementing, but in it is time modelling affairs start being perfomed by using an open-source, community-supported language and associated packages - such as ```Python®```!\
-In this case, an 8x Gain, temperature-insensitive residue amplifier for a SAR assisted Pipeline ADC is being modelled.\
 The repository file tree diagram can be represented as given:
 ```Python
-amplifier_modelling/
-|-- amplifier_modelling/
-|   |-- data/ # folder with .yaml files containing models info
-|   |   /
+modelling_utils/
+|-- modelling_utils/
 |   |-- __init__.py
-|   |-- cmos_model.py #cmos devices models
-|   |-- amp_model.py # amplifier modelling
 |   |-- read.py # read models and specifications f/ disk
 |   |-- write.py # save model and specifications t/ disk
 |   |-- util.py # utilities file providing graphing and timing func wrappers
-|   /
-|-- docs/
-|   |-- images/ # folder with the article's figs.
-|   |-- main.md # report of the modelling work
 |   /
 /
 ```
@@ -34,15 +25,6 @@ F --> G(Model Testing) --> J(Plot Results) --> I(Result's Analysis)
 I --> H{Meets \n Specifications?}
 H --> |No| E
 H --> |Yes| K(End) 
-```
-## Running the tests
-The following commands were used, in order to run the tests regarding the validation of the design:
-```Python
-# with poetry (python package manager)
-poetry run python -m unittest tests/test_amplifier_modelling.py
-
-# without poetry
-python -m unittest tests/test_amplifier_modelling.py
 ```
 **Dependencies**:
 - poetry - package manager for Python

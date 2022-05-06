@@ -7,7 +7,7 @@ def _read(path:str) -> dict:
     """_summary_
     
     Args:
-        path (str): _description_
+        path (str): path to read the file from
 
     Raises:
         FileNotFoundError: _description_
@@ -15,7 +15,7 @@ def _read(path:str) -> dict:
         IOError: _description_
 
     Returns:
-        dict: _description_
+        dict: data structure containing the extracted information from the YAML / JSON file
     """
     if not os.path.exists(path):
         raise FileNotFoundError(f"File {path} not found")

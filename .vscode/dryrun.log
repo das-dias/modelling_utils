@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory `/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils'
+make: Leaving directory `/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

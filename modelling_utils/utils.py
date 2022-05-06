@@ -5,16 +5,9 @@
 * *[summary] Essential utilities for data processing and representation and other stuff
 * ***********************************
 """
-__figs_path__ = "/figs"
 
-__line_styles__ = [
-    "o-",
-    "-.",
-    "*-",
-    ":",
-    "-"
-]
 import itertools
+from cycler import cycler
 from enum import Enum
 import numpy as np
 from mpl_toolkits import mplot3d
@@ -22,7 +15,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
 import seaborn as sns
-
+__figs_path__ = os.path.join(os.getcwd(),"figs")
 class Units(Enum):
     """
     Enum containing the units of the devices
@@ -72,16 +65,22 @@ def timer(func):
         return result
     return wrapper
 
-def set_2D_style():
-    #define font family to use for all text
-    mpl.rcParams['font.family'] = 'serif'
+def _set_2D_style():
     sns.set_style('whitegrid') # darkgrid, white grid, dark, white and ticks
+    custom_cycler = (
+        cycler(color=['r', 'g', 'b', 'y']) +
+        cycler(linestyle=['-', '--', ':', '-.'])
+    )
+    plt.rc("lines", linewidth=4)    # line width
     plt.rc('axes', titlesize=18)     # fontsize of the axes title
     plt.rc('axes', labelsize=14)    # fontsize of the x and y labels
+    plt.rc("axes", prop_cycle=custom_cycler) # define a cycler of colours and linestyle
     plt.rc('xtick', labelsize=13)    # fontsize of the tick labels
     plt.rc('ytick', labelsize=13)    # fontsize of the tick labels
     plt.rc('legend', fontsize=13)    # legend fontsize
     plt.rc('font', size=13)          # controls default text sizes
+    #define font family to use for all text
+    mpl.rcParams['font.family'] = 'serif'
 
 def _plot_graph_2D(
     x, 
@@ -90,34 +89,42 @@ def _plot_graph_2D(
     xlabel: str=None, 
     ylabel: str=None, 
     title: str=None, 
-    filename: str=None, 
-    line_style: str=__line_styles__[0],
+    filename: str=None,
     legend: bool=False,
     hold_off: bool=False,
-    axis=None
+    axis=None,
+    show: bool=False,
+    xlim: tuple=None,
+    ylim: tuple=None
     ):
-    # pretty plot
     if not bool(axis):
-        ax = plt.axes()
+        axis = plt.axes()
     if not hold_off:
-        ax.plot(x, y, linestyle=line_style)  
+        axis.plot(x, y, label=label)  
         if bool(xlabel):
-            ax.xlabel(xlabel)
+            axis.set_xlabel(xlabel)
         if bool(ylabel): 
-            ax.ylabel(ylabel)
+            axis.set_ylabel(ylabel)
         if bool(title):    
-            ax.title(title)
+            axis.set_title(title)
         if legend:
-            ax.legend()
+            axis.legend()
+        if not bool(xlim):
+            plt.xlim([x[0], x[-1]])
+        else:
+            plt.xlim([xlim[0], xlim[1]])
+        if bool(ylim):
+            plt.xlim([ylim[0], ylim[1]])
         if filename is not None:
             if not os.path.exists(__figs_path__):
                 os.makedirs(__figs_path__)
             plt.savefig(os.path.join(__figs_path__,filename))
-        plt.show()
+        if show:
+            plt.show()
         plt.close()
     else:
-        ax = axis.plot(x, y, label=label, linestyle=line_style)
-    return ax
+        axis.plot(x, y, label=label)
+    return axis
     
 def _plot_graph_3D(
     x, 
@@ -128,14 +135,21 @@ def _plot_graph_3D(
     zlabel: str=None, 
     title: str=None, 
     filename: str=None, 
-    type: str=None
+    type: str=None,
+    show: bool=False
     ):
     # pretty plot
     fig = plt.figure()
     ax = plt.axes(projection='3d')
-    if type.lower() in ["surface", None]:
+    type = type if bool(type) else "line"
+    if type.lower() in ["line", None]:
+        ax.plot3D(x,y,z)
+    elif type.lower() == "scatter":
+        c = x+y
+        ax.scatter(x, y, z, c=c)
+    elif type.lower() == "surface":
         ax.plot_surface(x, y, z, cmap="seismic", edgecolor="grey")
-    elif type.lower() is "wireframe":
+    elif type.lower() == "wireframe":
         ax.plot_wireframe(x, y, z, color='blue')
     else:
         raise ValueError(f"Unsupported plot type: {type}")
@@ -152,7 +166,8 @@ def _plot_graph_3D(
         if not os.path.exists(__figs_path__):
             os.makedirs(__figs_path__)
         plt.savefig(os.path.join(__figs_path__,filename))
-    plt.show()
+    if show:
+        plt.show()
     plt.close()
 
 @timer
@@ -167,7 +182,9 @@ def plot_function(
     title: str=None,
     filename: str=None,
     type: str=None,
-    line_style: str=__line_styles__[0]
+    show: bool=False,
+    xlim: tuple=None,
+    ylim: tuple=None
     ):
     """_summary_
     Plots a function in 2D (curve) or 3D space (surface) depending on the parsing of the z variable
@@ -181,12 +198,13 @@ def plot_function(
         zlabel      (str)               : ordinate axis title
         title       (str)               : title of the plot
         filename    (str)               : name of the file to save the plot
-        type        (str)               : type of 3D plot to be made. Options : "surface", "wireframe" 
+        type        (str)               : type of 3D plot to be made. Options : "line", "scatter", "surface", "wireframe" 
         line_style  (str)               : line style to be used for the 2D plot
     """
+    _set_2D_style()
     if not all([isinstance(label, str) for label in labels]):
         raise TypeError("Labels should be strings")
-    if not bool(z):
+    if not isinstance(z, np.ndarray):
         if isinstance(y, np.ndarray):
             _plot_graph_2D(
                 x, y,
@@ -194,8 +212,10 @@ def plot_function(
                 xlabel=xlabel, 
                 ylabel=ylabel, 
                 title=title, 
-                filename=filename, 
-                line_style=line_style
+                filename=filename,
+                show=show,
+                xlim=xlim,
+                ylim=ylim
                 )
         elif isinstance(y, list):
             if len(labels) not in [len(y), 0]:
@@ -206,20 +226,20 @@ def plot_function(
                 if not all([isinstance(i, np.ndarray) for i in x]):
                     raise ValueError("x must be a list of numpy.ndarray")
                 funcs = list(zip(x, y))
-                line_style = itertools.cycle(__line_styles__)
-                for i, x_vec, y_vec in enumerate(funcs[:-1]):
-                    _plot_graph_2D(
+                axis = None
+                for i, xy in enumerate(funcs[:-1]):
+                    x_vec, y_vec = xy
+                    axis = _plot_graph_2D(
                         x_vec, y_vec,
                         label = labels[i] if len(labels)>0 else None,
                         xlabel=xlabel, 
                         ylabel=ylabel, 
                         title=title, 
-                        filename=filename,
-                        line_style=line_style, 
+                        filename=filename, 
                         legend=False,
-                        hold_off= True
+                        hold_off= True,
+                        axis=axis
                     )
-                    line_style = next(line_style)
                 x_vec, y_vec = funcs[-1]
                 _plot_graph_2D(
                     x_vec, y_vec,
@@ -227,26 +247,28 @@ def plot_function(
                     xlabel=xlabel, 
                     ylabel=ylabel, 
                     title=title, 
-                    filename=filename, 
-                    line_style=line_style, 
+                    filename=filename,
                     legend=True,
-                    hold_off= False
+                    hold_off= False,
+                    show=show,
+                    axis=axis,
+                    xlim=xlim,
+                    ylim=ylim
                 )
             elif isinstance(x, np.ndarray):
-                line_style = itertools.cycle(__line_styles__)
+                axis = None
                 for i, y_vec in enumerate(y[:-1]):
-                    _plot_graph_2D(
+                    axis = _plot_graph_2D(
                         x, y_vec,
                         label = labels[i] if len(labels)>0 else None, 
                         xlabel=xlabel, 
                         ylabel=ylabel, 
                         title=title, 
-                        filename=filename, 
-                        line_style=line_style, 
+                        filename=filename,
                         legend=False,
-                        hold_off= True
+                        hold_off= True,
+                        axis=axis
                     )
-                    line_style = next(line_style)
                 y_vec = y[-1]
                 _plot_graph_2D(
                     x, y_vec,
@@ -254,10 +276,13 @@ def plot_function(
                     xlabel=xlabel, 
                     ylabel=ylabel, 
                     title=title, 
-                    filename=filename, 
-                    line_style=line_style, 
+                    filename=filename,
                     legend=True,
-                    hold_off= False
+                    hold_off= False,
+                    show=show,
+                    axis=axis,
+                    xlim=xlim,
+                    ylim=ylim
                 )
             else:
                 raise ValueError("x must be a list of numpy.ndarray or a numpy.ndarray")
@@ -273,11 +298,12 @@ def plot_function(
             zlabel=zlabel, 
             title=title, 
             filename=filename, 
-            type=type
+            type=type,
+            show=show
         )
 
 @timer
-def plot_hist(data, labels: list=[], title: str=None, filename: str=None):
+def plot_hist(data, labels: list=[], title: str=None, filename: str=None, show:bool=False):
     """_summary_
     Plots a histogram of the data
     Args:
@@ -291,6 +317,7 @@ def plot_hist(data, labels: list=[], title: str=None, filename: str=None):
         ValueError: _description_
         TypeError: _description_
     """
+    _set_2D_style()
     if not all([isinstance(label, str) for label in labels]):
         raise TypeError("Labels should be strings")
     
@@ -317,6 +344,7 @@ def plot_hist(data, labels: list=[], title: str=None, filename: str=None):
         if not os.path.exists(__figs_path__):
             os.makedirs(__figs_path__)
         plt.savefig(os.path.join(__figs_path__,filename))
-    plt.show()
+    if show:
+        plt.show()
     plt.close()
     
