@@ -5,7 +5,7 @@
 * *[summary] Essential utilities for data processing and representation and other stuff
 * ***********************************
 """
-
+import pandas as pd
 import itertools
 from cycler import cycler
 from enum import Enum
@@ -17,31 +17,61 @@ import os
 import seaborn as sns
 __figs_path__ = os.path.join(os.getcwd(),"figs")
 class Units(Enum):
+    """_summary_
+    Units enumerator
     """
-    Enum containing the units of the devices
-    """
-    VOLTAGE = "V"
-    OHM = "Ω"
-    CELSIUS = "°C"
-    KELVIN = "K"
-    TIME = "s"
-    FREQUENCY = "Hz"
-    FARAD = "F"
-    HENRY = "H"
-    AMPERE = "A"
-
+    OHM="\u03A9"#capital Omega letter
+    AMPERE="A"
+    VOLTAGE="V"
+    HERTZ="Hz"
+    POWER="W"
+    SIEMENS="S"
+    FARAD="F"
+    HENRY="H"
+    METER="m"
+    METER_SQR="m^2"
+    DECIBEL="dB"
+    TIME="s"
 class Scale(Enum):
+    """_summary_
+    Unit scale enumerator
     """
-    Enum containing the scales of the units
+    EXA=('E', pow(10,18))
+    PETA=('P', pow(10,15))
+    TERA=('T', pow(10,12))
+    GIGA=('G', pow(10,9))
+    MEGA=('M', pow(10,6))
+    KILO=('k', pow(10,3))
+    MILI=('m', pow(10,-3))
+    MICRO=('u', pow(10,-6))
+    NANO=('n', pow(10,-9))
+    PICO=('p', pow(10,-12))
+    FEMTO=('f', pow(10,-15))
+    ATTO=('a', pow(10,-18))
+
+def stof(val: str)->float:
+    """_summary_
+    Get a value from a string
+    Args:
+        val (str): String value in the format of "<value> <scale letter>"
+    Raises:
+        ValueError: invalid scaling factor
+    Returns:
+        float: the extracted floating point value
     """
-    GIGA = ("G", 1e9)
-    MEGA = ("M", 1e6)
-    KILO = ("k", 1e3)
-    MILI = ("m", 1e-3)
-    MICRO = ("u", 1e-6)
-    NANO = ("n", 1e-9)
-    PICO = ("p", 1e-12)
-    FENTO = ("f", 1e-15)
+    scaling_factor = 1.0
+    tokens = val.split(" ")
+    res = 0.0
+    for token in tokens:
+        if token.isnumeric():
+            res = float(token)
+        else:
+            scale_letters = [scale.value[0] for scale in Scale]
+            if token not in scale_letters:
+                raise ValueError(f"Invalid scaling factor: {token}")
+            scaling_factor = [scale.value[1] for scale in Scale if scale.value[0] == token][0]
+    res *= scaling_factor
+    return res
 
 def timer(func):
     """_summary_
@@ -363,4 +393,16 @@ def plot_hist(data, labels: list=[], xlabel: str=None, title: str=None, filename
     if show:
         plt.show()
     plt.close()
+    
+def transform_dataset(lut: pd.DataFrame) -> pd.DataFrame:
+    """_summary_
+    Transforms the received look up table to
+    include the Vds, vbs and L sweep as table columns
+    Args:
+        df (pd.DataFrame): imported look up 
+                            table with the DC OP of 
+                            the transistor
+    Returns:
+        pd.DataFrame: The modified, multi-space look up table
+    """
     

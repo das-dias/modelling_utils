@@ -2,6 +2,7 @@ from loguru import logger
 import os
 import yaml
 import json
+import toml
 import csv
 import pandas as pd
 def write(info: dict, path:str) -> None:
@@ -19,14 +20,17 @@ def write(info: dict, path:str) -> None:
         raise FileNotFoundError(f"File {path} not found")
     head,tail = os.path.split(path)
     name, extension = os.path.splitext(tail)
-    if extension not in [ ".yaml", ".yml", ".json"]:
-        raise ValueError(f"File {path} is not a valid specification file. Only .yaml, .yml, .json are accepted")
+    possible_formats = [ ".yaml", ".yml", ".json", "toml"]
     try:
         with open(path, 'w') as file:
             if extension in [".yaml", ".yml"]:
                 yaml.dump(info, file)
             elif extension == ".json":
                 json.dump(info, file)
+            elif extension == ".toml":
+                toml.dump(info, file)
+            else:
+                raise ValueError(f"File {path} is not a valid specification file. Only {possible_formats} are accepted")
     except:
         raise IOError(f"File {path} could not be opened")
 

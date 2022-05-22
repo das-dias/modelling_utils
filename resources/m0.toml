@@ -1,0 +1,18 @@
+# all units are in the format of the International System (SI)
+[control]# input
+# mandatory parameters
+device="m0" # device name
+type="nch" # nmos
+vds=0.6
+gmoverid=20
+l="30 n" # "<value> <scale>"
+vsb=0
+# optional parameters
+id="500 u"
+
+[spit]# output
+outputdir="./output"
+# all the possible output parameters
+vars={m0=["vgs", "w", "gds", "gm", "gmbs", "self_gain", "ft", "fosc", "cgs", "cgd", "csb", "cdb", "cgb", "cvar", "ron", "region","vdsat"]}
+# or just:
+#vars=["all"]

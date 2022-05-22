@@ -1,0 +1,11 @@
+# all units except circuit gain are specified in International System (SI)
+[control] # control parameters for each device of the circuit
+devices=["m0","m1","m2","m3"]
+m0={type="nch", gmoverid=20, l="30 n", vds="150 m", id="1 m", vsb=0}
+m1={type="nch", gmoverid=20, l="30 n", vds="150 m", id="1 m", vsb=0}
+m2={type="pch", gmoverid=20, l="30 n", vsd="150 m", id="1 m", vbs=0}
+m3={type="pch", gmoverid=20, l="30 n", vsd="150 m", id="1 m", vbs=0}
+
+[spit] # output control variables
+outputdir="./output"
+vars={m0=["all"], m1=["vgs","cgs", "ft", "self_gain"], m2=["ft"], m3=["cvar"]}

@@ -1,15 +1,19 @@
+from modelling_utils.read import read_specs
 import numpy as np
+import pandas as pd
 from modelling_utils import(
     plot_function,
     plot_hist,
-    timer
+    timer,
+    read_data,
+    read_lut
 )
 from modelling_utils import __version__
 import unittest
 class TestModellingFramework(unittest.TestCase):
 
     def test_version(self):
-        self.assertEqual(__version__, '0.1.0')
+        self.assertEqual(__version__, '0.1.2')
     
     def test_single_plot_2d(self):
         x = np.arange(0, 2*(np.pi), 0.1)
@@ -58,14 +62,41 @@ class TestModellingFramework(unittest.TestCase):
 
     def test_histogram(self):
         x = np.random.randn(100)
-        plot_hist(data=x, labels=["histogram"], xlabel="random val", title="Simple Histogram", show=True, filename="hist.png")
+        plot_hist(data=x, labels=["histogram"], xlabel="random val", title="Simple Histogram", show=False, filename="hist.png")
         xx = [
             np.random.randn(100),
             np.random.randn(100),
             np.random.randn(100)
         ]
-        plot_hist(data=xx, labels=["rand1","rand2","rand3"], xlabel="random val", title="Triple Histogram", show=True, filename="hist2.png")
+        plot_hist(data=xx, labels=["rand1","rand2","rand3"], xlabel="random val", title="Triple Histogram", show=False, filename="hist2.png")
         self.assertTrue(True)
+    
+    def test_read_specs(self):
+        path1 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/m0.toml"
+        path2 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/specs.toml"
+        devices1=read_specs(path1)
+        self.assertIsNotNone(devices1)
+        print(devices1)
+        
+        devices2=read_specs(path2)
+        self.assertIsNotNone(devices2)
+        print(devices2)
+        pass
+
+    def test_read_data(self):
+        path = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/simulations_28nm_cmos/simulations/ncell/vsb-0_w-2-3-u_l-30-n_sweep-vgs-vds.csv"
+        df = read_data(path)
+        self.assertEqual(type(df), pd.DataFrame)
+        print(df)
+        pass
+    
+    def test_read_lut(self):
+        path = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/simulations_28nm_cmos/simulations/ncell/vsb-0_w-2-3-u_l-30-n_sweep-vgs-vds.csv"
+        df_lut = read_lut(path)
+        self.assertEqual(type(df_lut), pd.DataFrame)
+        print(df_lut)
+        pass
+        
         
 if __name__ == "__main__":
     unittest.main()
