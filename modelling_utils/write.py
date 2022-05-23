@@ -1,3 +1,4 @@
+from http.client import UnimplementedFileMode
 from loguru import logger
 import os
 import yaml
@@ -16,6 +17,7 @@ def write(info: dict, path:str) -> None:
         ValueError: _description_
         IOError: _description_
     """
+    raise NotImplementedError(f"write function not implemented")
     if not os.path.exists(path):
         raise FileNotFoundError(f"File {path} not found")
     head,tail = os.path.split(path)
@@ -49,6 +51,7 @@ def write_data(data: pd.DataFrame, path: str):
     Returns:
         pandas DataFrame: dataframe containing the extracted information from the CSV file
     """
+    raise NotImplementedError(f"write_data function not implemented")
     if not os.path.exists(path):
         raise FileNotFoundError(f"File {path} not found")
     head,tail = os.path.split(path)
