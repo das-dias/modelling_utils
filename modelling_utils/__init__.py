@@ -1,4 +1,4 @@
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = "Diogo André"
 __date__ = "2022-05-05"
 __annotations__ = "Utility functions and data structure for Analog Integrated Circuit Modelling"
