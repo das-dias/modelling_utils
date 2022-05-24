@@ -59,6 +59,7 @@ def stof(val: str)->float:
     Returns:
         float: the extracted floating point value
     """
+    float_separators = [".", ","]
     scaling_factor = 1.0
     tokens = val.split(" ")
     res = 0.0
@@ -66,10 +67,13 @@ def stof(val: str)->float:
         if token.isnumeric():
             res = float(token)
         else:
-            scale_letters = [scale.value[0] for scale in Scale]
-            if token not in scale_letters:
-                raise ValueError(f"Invalid scaling factor: {token}")
-            scaling_factor = [scale.value[1] for scale in Scale if scale.value[0] == token][0]
+            if any([sep in token for sep in float_separators]):
+                res = float(token)
+            else:
+                scale_letters = [scale.value[0] for scale in Scale]
+                if token not in scale_letters:
+                    raise ValueError(f"Invalid scaling factor: {token}")
+                scaling_factor = [scale.value[1] for scale in Scale if scale.value[0] == token][0]
     res *= scaling_factor
     return res
 
@@ -394,15 +398,4 @@ def plot_hist(data, labels: list=[], xlabel: str=None, title: str=None, filename
         plt.show()
     plt.close()
     
-def transform_dataset(lut: pd.DataFrame) -> pd.DataFrame:
-    """_summary_
-    Transforms the received look up table to
-    include the Vds, vbs and L sweep as table columns
-    Args:
-        df (pd.DataFrame): imported look up 
-                            table with the DC OP of 
-                            the transistor
-    Returns:
-        pd.DataFrame: The modified, multi-space look up table
-    """
     
