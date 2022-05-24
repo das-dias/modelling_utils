@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "modelling_utils"
-version = "0.1.4"
+version = "0.1.5"
 description = " Utility functions and data structure for aiding in Analog Integrated Circuit Modelling using Python"
 authors = ["Diogo André <das.dias6@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,6 @@ keywords = ["modelling", "analog-ic","python", "gm-over-id", "cmos"]
 [tool.poetry.dependencies]
 python = ">=3.9,<3.11" # limitted version due to scipy
 numpy = "^1.22.3" # numerical framework for efficient float array manipulation
-#scipy = "^1.8.0" # scientific framework for python
 PyYAML = "^6.0" # YAML parser
 matplotlib = "^3.5.2" # graph plotting
 loguru = "^0.6.0" # logging into console
