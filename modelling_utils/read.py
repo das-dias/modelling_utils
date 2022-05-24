@@ -101,11 +101,13 @@ def read_lut(path: str) -> pd.DataFrame:
     name, extension = os.path.splitext(tail)
     attrs = name.split('_')
     detected_vars={}
+    sweeped_vars = []
     for attr in attrs:
         tokens=attr.split('-')
         var_name = tokens[0]
         if var_name == "sweep":
-            break # end variable search loop
+            sweeped_vars.append([tokens[1], tokens[2]])
+            break
         var_alpha=""
         scale = None
         for token in tokens[1:]:
@@ -156,6 +158,7 @@ def read_lut(path: str) -> pd.DataFrame:
     # and expand the short axis (x-axis) until it reaches the required length
     # adjoining the primary sweeping axis onto the data frame
     x_axis = lut.columns[0].split(' ')[0]
+    x_axis = x_axis.replace(' ','')
     for var_name in sweep_axis_value_space.keys():
         for var_value in sweep_axis_value_space[var_name]:
             [data[var_name].append(val) for val in [var_value]*original_lut_size]

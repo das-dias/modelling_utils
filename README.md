@@ -160,7 +160,7 @@ MosDevice Class Variables:
 "name" - Name of the device
 "type" - Type of device; "nch" = NMOS or "pch" = PMOS
 # mos device control/input variables for the application of the Gm/Id method for device sizing
-"vds" - Drain to Source Potential Difference [volt]
+"vds" - Drain to Source Potential Difference [volt], approximately vds = vdsat + vmargin, where vdsat = 2/(gm/id)
 "vsd" - Source to Drain Potential Difference [volt]
 "vsb" - Source to Bulk (Back Gate) Potential Difference [volt]
 "vbs" - Bulk to Source Potential Difference [volt]

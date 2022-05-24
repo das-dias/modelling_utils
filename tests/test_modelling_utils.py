@@ -13,7 +13,7 @@ import unittest
 class TestModellingFramework(unittest.TestCase):
 
     def test_version(self):
-        self.assertEqual(__version__, '0.1.2')
+        self.assertEqual(__version__, '0.1.5')
     
     def test_single_plot_2d(self):
         x = np.arange(0, 2*(np.pi), 0.1)
@@ -92,6 +92,13 @@ class TestModellingFramework(unittest.TestCase):
     
     def test_read_lut(self):
         path = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/simulations_28nm_cmos/simulations/ncell/vsb-0_w-2-3-u_l-30-n_sweep-vgs-vds.csv"
+        df_lut = read_lut(path)
+        self.assertEqual(type(df_lut), pd.DataFrame)
+        print(df_lut)
+        pass
+
+    def test_read_lut2(self):
+        path = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/simulations_28nm_cmos/simulations/pcell/vbs-0_w-2-3-u_l-30-n_sweep-vsg-vsd.csv"
         df_lut = read_lut(path)
         self.assertEqual(type(df_lut), pd.DataFrame)
         print(df_lut)
