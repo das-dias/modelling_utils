@@ -315,7 +315,7 @@ class Devices(object):
         for device in self.devices.values():
             for i,var in enumerate(vars):
                 data[columns[i]].append(getattr(device, var))
-        order = ["name", "type", "vds", "vsb", "gm_id", "l", "w", "id"]
+        order = ["name", "type", "vds", "vsb", "gmoverid", "l", "w", "id"]
         order = [var+"["+MosCell.__UNITS__[var]+"]" for var in order]
         order = order+[var for var in columns if var not in order]
         return DataFrame(data, index=self.devices.keys())[order]
