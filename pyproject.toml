@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "modelling_utils"
-version = "0.1.7"
+version = "0.1.8"
 description = " Utility functions and data structure for aiding in Analog Integrated Circuit Modelling using Python"
 authors = ["Diogo André <das.dias6@gmail.com>"]
 license = "MIT"

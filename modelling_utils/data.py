@@ -73,7 +73,7 @@ class TomlSpitVariables(Enum):
     GMBS="gmbs"
     SELF_GAIN="selfgain"
     F_T="ft"
-    F_OSC="fosc-max"
+    F_OSC="fosc"
     CGS="cgs"
     CGD="cgd"
     CGB="cgb"
@@ -106,7 +106,7 @@ class MosCell(object):
         "vsd",
         "vsb",
         "vbs",
-        "gm_id",
+        "gmoverid",
         "l",
         "id",
         "vgs",
@@ -135,7 +135,7 @@ class MosCell(object):
         "vsd":Units.VOLTAGE.value,
         "vsb":Units.VOLTAGE.value,
         "vbs":Units.VOLTAGE.value,
-        "gm_id":Units.SIEMENS.value+Units.AMPERE.value+"^-1",
+        "gmoverid":Units.SIEMENS.value+Units.AMPERE.value+"^-1",
         "l":Units.METER.value,
         "id":Units.AMPERE.value,
         "vgs":Units.VOLTAGE.value,
