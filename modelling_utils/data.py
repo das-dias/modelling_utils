@@ -269,9 +269,9 @@ class MosCell(object):
             if type(val) not in [float, str, int]:
                 raise ValueError("Gm/Id value must parsed as a float, integer or string")
             if type(val) == str:
-                self.gm_id = stof(val)
+                self.gmoverid = stof(val)
             else:
-                self.gm_id = float(val)
+                self.gmoverid = float(val)
         elif key == TomlControlKeywords.LENGTH.value:
             if type(val) not in [float, str]:
                 raise ValueError("Channel Length (L) value must parsed as a float or string")
