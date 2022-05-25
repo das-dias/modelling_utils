@@ -163,7 +163,7 @@ class MosCell(object):
         type:str="nch",
         vds:float=0.0,
         vsb:float=0.0,
-        gm_id:float=1.0,
+        gmoverid:float=1.0,
         l:float=30*Scale.NANO.value[1],
         id:float=None
     ):
@@ -174,7 +174,7 @@ class MosCell(object):
         self.vsd:float=-vds
         self.vsb:float=vsb
         self.vbs:float=-vsb
-        self.gm_id:float=gm_id
+        self.gmoverid:float=gmoverid
         self.l:float=l
         self.id:float=id
         # output vars
