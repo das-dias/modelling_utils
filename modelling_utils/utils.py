@@ -204,7 +204,7 @@ def _plot_graph_3D(
         plt.show()
     plt.close()
 
-@timer
+
 def plot_function(
     x, 
     y,
@@ -336,7 +336,7 @@ def plot_function(
             show=show
         )
 
-@timer
+
 def plot_hist(data, labels: list=[], xlabel: str=None, title: str=None, filename: str=None, show:bool=False, stat: str="probability"):
     """_summary_
     Plots a histogram of the data
