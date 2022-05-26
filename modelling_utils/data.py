@@ -38,7 +38,12 @@ class TomlControlKeywords(Enum):
     """
     DEVICE="device"
     DEVICES="devices"
+    VARACTOR="varactor"
+    VARACTORS="varactors"
     TYPE="type"
+    CVAR="cvar" # target varactor capacitance
+    VGB="vgb"
+    VBG="vbg"
     VDS="vds"
     VSD="vsd"
     GMOVERID="gmoverid"
@@ -79,7 +84,7 @@ class TomlSpitVariables(Enum):
     CGB="cgb"
     CSB="csb"
     CDB="cdb"
-    C_VARACTOR="cvar"
+    CVAR="cvar" # actual varactor capacitance
     R_ON="ron"
     REGION="region"
     ALL="all"
@@ -92,7 +97,7 @@ class TomlControlType(Enum):
     NMOS="nch"
     PMOS="pch"
     
-class MosCell(object):
+class MosCell:
     """_summary_
     Object implementing the CMOS device
     control and main spice parameters
@@ -102,6 +107,9 @@ class MosCell(object):
     __slots__=[
         "name",
         "type",
+        "vgb",
+        "vgb",
+        "vbg",
         "vds",
         "vsd",
         "vsb",
@@ -126,16 +134,18 @@ class MosCell(object):
         "fosc",
         "ron",
         "region",
-        "vdsat"
+        "vdsat",
     ]
     __UNITS__={
         "name":"",
         "type":"",
+        "vgb":Units.VOLTAGE.value,
+        "vbg":Units.VOLTAGE.value,
         "vds":Units.VOLTAGE.value,
         "vsd":Units.VOLTAGE.value,
         "vsb":Units.VOLTAGE.value,
         "vbs":Units.VOLTAGE.value,
-        "gmoverid":Units.SIEMENS.value+Units.AMPERE.value+"^-1",
+        "gmoverid":Units.VOLTAGE.value+"^-1",
         "l":Units.METER.value,
         "id":Units.AMPERE.value,
         "vgs":Units.VOLTAGE.value,
@@ -150,12 +160,12 @@ class MosCell(object):
         "gmbs":Units.SIEMENS.value,
         "gm":Units.SIEMENS.value,
         "gds":Units.SIEMENS.value,
-        "self_gain":" ",
+        "self_gain":"VV^-01",
         "ft":Units.HERTZ.value,
         "fosc":Units.HERTZ.value,
         "ron":Units.OHM.value,
-        "region":" ",
-        "vdsat":Units.VOLTAGE.value
+        "region":"",
+        "vdsat":Units.VOLTAGE.value,
     }
     def __init__(
         self,
@@ -165,11 +175,18 @@ class MosCell(object):
         vsb:float=0.0,
         gmoverid:float=1.0,
         l:float=30*Scale.NANO.value[1],
-        id:float=None
+        id:float=None,
+        vgb:float=0.0,
+        cvar:float =0.0
     ):
         self.name=name
         self.type=type
         # input vars
+        # varactor 
+        self.vgb = vgb if bool(vgb) else None
+        self.vbg = -self.vgb if bool(self.vgb) else None
+        self.cvar=cvar
+        # cell
         self.vds:float=vds
         self.vsd:float=-vds
         self.vsb:float=vsb
@@ -186,7 +203,6 @@ class MosCell(object):
         self.cgb:float=None
         self.csb:float=None
         self.cdb:float=None
-        self.cvar:float=None
         self.gmbs:float=None
         self.gm:float=None
         self.gds:float=None
@@ -211,7 +227,7 @@ class MosCell(object):
         return result
 
     def __parse_data__(self, key:str, val)->None:
-        if key == TomlControlKeywords.DEVICE.value:
+        if key == TomlControlKeywords.DEVICE.value or key == TomlControlKeywords.VARACTOR.value:
             if type(val) != str:
                 raise ValueError("Device name must be a string")
             self.name = val
@@ -221,6 +237,35 @@ class MosCell(object):
             if val not in [TomlControlType.NMOS.value, TomlControlType.PMOS.value]:
                 raise ValueError(f"Device type must be \"{TomlControlType.NMOS.value}\" or \"{TomlControlType.PMOS.value}\"")
             self.type = val
+        elif key == TomlControlKeywords.CVAR.value:
+            if type(val) not in [float, str, int]:
+                raise ValueError("Varactor Cap. CVAR must be parsed as a float, integer or string")
+            if type(val) == str:
+                self.cvar = stof(val)
+            else:
+                self.cvar = float(val)
+        elif key == TomlControlKeywords.VGB.value:
+            if self.type != TomlControlType.NMOS.value:
+                raise ValueError("VGB value to be specified is only valid for NMOS devices")
+            if type(val) not in [float, str, int]:
+                raise ValueError("VGB value must parsed as a float, integer or string")
+            if type(val) == str:
+                self.vgb = stof(val)
+                self.vbg = -self.vgb
+            else:
+                self.vgb = float(val)
+                self.vbg = -self.vgb
+        elif key == TomlControlKeywords.VBG.value:
+            if self.type != TomlControlType.PMOS.value:
+                raise ValueError("VBG value to be specified is only valid for PMOS devices")
+            if type(val) not in [float, str, int]:
+                raise ValueError("VBG value must parsed as a float, integer or string")
+            if type(val) == str:
+                self.vbg = stof(val)
+                self.vgb = -self.vbg
+            else:
+                self.vbg = float(val)
+                self.vgb = -self.vbg
         elif key == TomlControlKeywords.VDS.value:
             if self.type != TomlControlType.NMOS.value:
                 raise ValueError("VDS value to be specified is only valid for NMOS devices")
@@ -290,20 +335,21 @@ class MosCell(object):
             raise ValueError(f"{key} is not a valid control variable for a CMOS device")
                 
         
-class Devices(object):
+class Devices:
     """_summary_
     A class object ot save all the devices to which
     the gm/id sizing process will be applied, and the output
     specifications of each device
     """
-    __slots__=["devices", "spits", "plot", "output_dir"]
+    __slots__=["devices", "varactors", "spits", "plot", "output_dir"]
     def __init__(self):
         self.devices={}
+        self.varactors={}
         self.spits=defaultdict(list)
         self.plot=False
         self.output_dir=None
     
-    def __data_frame__(self)->DataFrame:
+    def __data_frame__(self, cvar=False)->DataFrame:
         """_summary_
         Converts the device dictionary to a Pandas dataframe
         Returns:
@@ -311,20 +357,40 @@ class Devices(object):
         """
         vars = [var for var in dir(MosCell) if not var.startswith('__')]
         columns = [var+"["+MosCell.__UNITS__[var]+"]" for var in vars]
-        data = defaultdict(list)
-        for device in self.devices.values():
-            for i,var in enumerate(vars):
-                data[columns[i]].append(getattr(device, var))
-        order = ["name", "type", "vds", "vsb", "gmoverid", "l", "w", "id"]
-        order = [var+"["+MosCell.__UNITS__[var]+"]" for var in order]
-        order = order+[var for var in columns if var not in order]
-        return DataFrame(data, index=self.devices.keys())[order]
+        data = {k:[] for k in columns}
+        index = None
+        if not cvar:
+            for device in self.devices.values():
+                for i,var in enumerate(vars):
+                    data[columns[i]].append(getattr(device, var))
+            order = ["name", "type", "vds", "vsb", "gmoverid", "l", "w", "id"]
+            order = [var+"["+MosCell.__UNITS__[var]+"]" for var in order]
+            order = order+[var for var in columns if var not in order]
+            index = list(self.devices.keys())
+        else:
+            for varactor in self.varactors.values():
+                for i,var in enumerate(vars):
+                    data[columns[i]].append(getattr(varactor, var))
+            order = ["name", "type", "vgb", "l", "w", "cvar"]
+            order = [var+"["+MosCell.__UNITS__[var]+"]" for var in order]
+            order = order+[var for var in columns if var not in order]
+            index = self.varactors.keys()
+        return DataFrame(data, index=index)[order]
 
     def __str__(self) -> str:
-        return str(self.__data_frame__())
+        devices_df = self.__data_frame__()
+        vars_df = self.__data_frame__(True)
+        ret = "Devices:\n"
+        ret += str(devices_df) if not devices_df.empty else "--None--\n"
+        ret += "Varactors:\n"
+        ret += str(vars_df) if not vars_df.empty else "--None--\n"
+        return ret
     
-    def add(self, device) -> None:
-        self.devices[device.name] = device
+    def add(self, device, varactor = False) -> None:
+        if varactor:
+            self.varactors[device.name] = device
+        else:
+            self.devices[device.name] = device
 
     def parse_data(self, data:dict) -> None:
         """_summary_
@@ -342,6 +408,12 @@ class Devices(object):
                     for key,token in list(data[sec].items())[1:]:
                         device.__parse_data__(key, token)
                     self.add(device)
+                elif key == TomlControlKeywords.VARACTOR.value:
+                    # create a new varactor
+                    varactor = MosCell(name=token)
+                    for key,token in list(data[sec].items())[1:]:
+                        varactor.__parse_data__(key, token)
+                    self.add(varactor, True)
                 elif key == TomlControlKeywords.DEVICES.value:
                     devices_names = [n for n in token]
                     for key,token in list(data[sec].items())[1:]:
@@ -351,6 +423,15 @@ class Devices(object):
                         for subkey, subtoken in token.items():
                             device.__parse_data__(subkey, subtoken)
                         self.add(device)
+                elif key == TomlControlKeywords.VARACTORS.value:
+                    varactors_names = [n for n in token]
+                    for key,token in list(data[sec].items())[1:]:
+                        if key not in varactors_names:
+                            raise ValueError(f"{key} is an unrecognized device name")
+                        varactor = MosCell(name=key)
+                        for subkey, subtoken in token.items():
+                            varactor.__parse_data__(subkey, subtoken)
+                        self.add(varactor, True)
                 else:
                     raise ValueError(f"{key} is not a valid key for the first argument of {TomlSections.CONTROL.name} section. First argument must be {TomlControlKeywords.DEVICE.name} or {TomlControlKeywords.DEVICES.name}.")
             elif sec == TomlSections.SPIT.value:
@@ -373,8 +454,8 @@ class Devices(object):
                         [acceptable_vars.append(v) for v in dir(MosCell) if not v.startswith('__')]
                         for subkey, subtoken in token.items():
                             
-                            if subkey not in list(self.devices.keys()):
-                                raise ValueError(f"{subkey} is an unrecognized device name. Recognized devices are {list(self.devices.keys())}")
+                            if subkey not in list(self.devices.keys()) + list(self.varactors.keys()):
+                                raise ValueError(f"{subkey} is an unrecognized device name. Recognized devices are {list(self.devices.keys()) + list(self.varactors.keys())}")
                             for var in subtoken:    
                                 if var not in acceptable_vars:
                                     raise ValueError(f"{var} is an unrecognized variable name")
@@ -382,5 +463,5 @@ class Devices(object):
                                     self.spits[subkey].append(var)
             else:
                 raise ValueError(f"{sec} is not a valid section name")
-        if len(self.devices) == 0:
+        if len(self.devices) == 0 and len(self.varactors) == 0:
             raise ValueError("No devices were detected in the TOML setup file")
