@@ -176,6 +176,7 @@ MosDevice Class Variables:
 "cgb" - Gate to Bulk Parasitic Cap. [farad]
 "csb" - Source to Bulk Parasitic Cap. [farad]
 "cdb" - Drain to Bulk Parasitic Cap. [farad]
+"cdep" - Device Depletion region parasitic cap. [farad]
 "cvar" - Device Total Capacitance in Varactor config. [farad]
 "gm" - Device Transconductance [siemens]
 "gmbs" - Device Source to Bulk Transconductance - Body Effect Trasnc. [siemens]

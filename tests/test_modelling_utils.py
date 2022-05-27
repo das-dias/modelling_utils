@@ -13,7 +13,7 @@ import unittest
 class TestModellingFramework(unittest.TestCase):
 
     def test_version(self):
-        self.assertEqual(__version__, '0.2.1')
+        self.assertEqual(__version__, '0.2.3')
     
     def test_single_plot_2d(self):
         x = np.arange(0, 2*(np.pi), 0.1)
@@ -107,6 +107,17 @@ class TestModellingFramework(unittest.TestCase):
     def test_read_varactor(self):
         path1 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/v0.toml"
         path2 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/var_specs.toml"
+        devices1=read_specs(path1)
+        self.assertIsNotNone(devices1)
+        print(devices1)
+        
+        devices2=read_specs(path2)
+        self.assertIsNotNone(devices2)
+        print(devices2)
+    
+    def test_read_switch(self):
+        path1 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/s0.toml"
+        path2 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/sw_specs.toml"
         devices1=read_specs(path1)
         self.assertIsNotNone(devices1)
         print(devices1)
