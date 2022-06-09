@@ -104,6 +104,13 @@ class TestModellingFramework(unittest.TestCase):
         print(df_lut)
         pass
     
+    def test_read_switch_lut(self):
+        path = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/simulations_28nm_cmos/simulations/nswitch/w-2-3-u_l-30-n_vds-0_vsb-0_sweep-vgs.csv"
+        df_lut = read_lut(path)
+        self.assertEqual(type(df_lut), pd.DataFrame)
+        print(df_lut)
+        pass
+    
     def test_read_varactor(self):
         path1 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/v0.toml"
         path2 = "/Users/dasdias/Documents/PhD-NOVA/Circuits/ResidueAmplifier_Gain8_28nmTSMC/modelling_utils/resources/var_specs.toml"

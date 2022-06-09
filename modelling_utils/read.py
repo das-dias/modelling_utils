@@ -101,13 +101,12 @@ def read_lut(path: str) -> pd.DataFrame:
     name, extension = os.path.splitext(tail)
     attrs = name.split('_')
     detected_vars={}
-    sweeped_vars = []
     for attr in attrs:
         tokens=attr.split('-')
         var_name = tokens[0]
         if var_name == "sweep":
-            [sweeped_vars.append(token) for token in tokens[1:]]
-            break
+            # ignore sweep variable because they are encoded in the imported data headers
+            continue
         var_alpha=""
         scale = None
         for token in tokens[1:]:
@@ -151,7 +150,7 @@ def read_lut(path: str) -> pd.DataFrame:
     for col in data.keys():
         if len(data[col]) > max_col_len:
             max_col_len = len(data[col])
-    # adjoint the constant axis : vsb and lx
+    # adjoint the constant axis
     for var_name in detected_vars.keys():
         data[var_name] = [detected_vars[var_name]]*max_col_len
     # adjoint the secondary sweeping variable - vds or vsd
@@ -159,8 +158,12 @@ def read_lut(path: str) -> pd.DataFrame:
     # adjoining the primary sweeping axis onto the data frame
     x_axis = lut.columns[0].split(' ')[0]
     x_axis = x_axis.replace(' ','')
-    for var_name in sweep_axis_value_space.keys():
-        for var_value in sweep_axis_value_space[var_name]:
-            [data[var_name].append(val) for val in [var_value]*original_lut_size]
-            [data[x_axis].append(val) for val in lut[lut.columns[0]].values]
+    if len(sweep_axis_value_space)>0:
+        for var_name in sweep_axis_value_space.keys():
+            for var_value in sweep_axis_value_space[var_name]:
+                [data[var_name].append(val) for val in [var_value]*original_lut_size]
+                [data[x_axis].append(val) for val in lut[lut.columns[0]].values]
+    else:
+        # simply append the x_axis to the data frame
+        [data[x_axis].append(val) for val in lut[lut.columns[0]].values]
     return pd.DataFrame(data)
