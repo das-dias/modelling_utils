@@ -106,7 +106,7 @@ def read_lut(path: str) -> pd.DataFrame:
         tokens=attr.split('-')
         var_name = tokens[0]
         if var_name == "sweep":
-            sweeped_vars.append([tokens[1], tokens[2]])
+            [sweeped_vars.append(token) for token in tokens[1:]]
             break
         var_alpha=""
         scale = None
