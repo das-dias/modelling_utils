@@ -13,6 +13,6 @@ id="500 u"
 [spit]# output
 outputdir="./output"
 # all the possible output parameters
-vars={m0=["vgs", "w", "gds", "gm", "gmbs", "self_gain", "ft", "fosc", "cgs", "cgd", "csb", "cdb", "cgb", "cvar", "ron", "region","vdsat"]}
+vars={m0=["vgs", "w", "gds", "gm", "gmbs", "self_gain", "ft", "fosc", "cgs", "cgd", "csb", "cdb", "cgb", "cvar", "rds", "region","vdsat"]}
 # or just:
 #vars=["all"]

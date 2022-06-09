@@ -43,7 +43,7 @@ class TomlControlKeywords(Enum):
     SWITCH="switch"
     SWITCHES="switches"
     TYPE="type"
-    RON="ron" # target on resistance for the switch
+    RDS="rds" # target on resistance for the switch
     CVAR="cvar" # target varactor capacitance
     VGS="vgs"
     VSG="vsg"
@@ -88,7 +88,7 @@ class TomlSpitVariables(Enum):
     CSB="csb"
     CDB="cdb"
     CVAR="cvar" # actual varactor capacitance
-    R_ON="ron"
+    R_DS="rds"
     REGION="region"
     ALL="all"
 
@@ -134,7 +134,7 @@ class MosCell:
         "self_gain",
         "ft",
         "fosc",
-        "ron",
+        "rds",
         "region",
         "vdsat",
     ]
@@ -165,7 +165,7 @@ class MosCell:
         "self_gain":"VV^-01",
         "ft":Units.HERTZ.value,
         "fosc":Units.HERTZ.value,
-        "ron":Units.OHM.value,
+        "rds":Units.OHM.value,
         "region":"",
         "vdsat":Units.VOLTAGE.value,
     }
@@ -179,7 +179,7 @@ class MosCell:
         l:float=30*Scale.NANO.value[1],
         id:float=0.0,
         vgs:float=0.0,
-        ron:float=0.0,
+        rds:float=0.0,
         cvar:float =0.0
     ):
         self.name=name
@@ -188,7 +188,7 @@ class MosCell:
         # varactor 
         self.cvar=cvar if bool(cvar) else None
         #switch
-        self.ron = ron if bool(ron) else None
+        self.rds = rds if bool(rds) else None
         # cell
         self.vds:float=vds
         self.vsd:float=-vds
@@ -208,7 +208,7 @@ class MosCell:
         self.cdb:float=None
         self.gmbs:float=None
         self.gm:float=None
-        self.gds:float=None
+        self.gds:float= 1/self.rds if bool(self.rds) else None
         self.self_gain:float=None
         self.ft:float=None
         self.fosc:float=None
@@ -248,13 +248,15 @@ class MosCell:
                 self.cvar = stof(val)
             else:
                 self.cvar = float(val)
-        elif key == TomlControlKeywords.RON.value:
+        elif key == TomlControlKeywords.RDS.value:
             if type(val) not in [float, str, int]:
-                raise ValueError("Switch On Resistance RON must be parsed as a float, integer or string")
+                raise ValueError("Switch On Resistance RDS must be parsed as a float, integer or string")
             if type(val) == str:
-                self.ron = stof(val)
+                self.rds = stof(val)
+                self.gds = 1/self.rds
             else:
-                self.ron = float(val)
+                self.rds = float(val)
+                self.gds = 1/self.rds
         elif key == TomlControlKeywords.VGS.value:
             if self.type != TomlControlType.NMOS.value:
                 raise ValueError("VGS value to be specified is only valid for NMOS devices")
@@ -391,7 +393,7 @@ class Devices:
             for switch in self.switches.values():
                 for i,var in enumerate(vars):
                     data[columns[i]].append(getattr(switch, var))
-            order = ["name", "type", "vgs", "l", "w", "ron"]
+            order = ["name", "type", "vgs", "l", "w", "rds"]
             order = [var+"["+MosCell.__UNITS__[var]+"]" for var in order]
             order = order+[var for var in columns if var not in order]
             index = self.switches.keys()

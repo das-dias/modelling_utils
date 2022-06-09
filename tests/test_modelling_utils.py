@@ -13,7 +13,7 @@ import unittest
 class TestModellingFramework(unittest.TestCase):
 
     def test_version(self):
-        self.assertEqual(__version__, '0.2.4')
+        self.assertEqual(__version__, '0.2.6')
     
     def test_single_plot_2d(self):
         x = np.arange(0, 2*(np.pi), 0.1)
