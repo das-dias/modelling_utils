@@ -140,13 +140,6 @@ def read_lut(path: str) -> pd.DataFrame:
         if len(tokens)>2:
             var_name = tokens[1]
             var_value = float(tokens[2])
-            if len(tokens[2:])>1:
-                var_toks= [tok for tok in tokens[2:4] if tok not in [" ", ""]]
-                #print("###############################")
-                #print(" ".join(var_toks))
-                #print("###############################")
-                var_value = stof(" ".join(var_toks))
-                print(f"Detected Sweeped Variable: {var_name}: {var_value}")
             if bool(sweep_axis_value_space.get(var_name)):
                 if var_value not in sweep_axis_value_space.get(var_name):
                     sweep_axis_value_space[var_name].append(var_value)
