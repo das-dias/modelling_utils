@@ -102,17 +102,18 @@ def timer(func):
 def _set_2D_style():
     sns.set_style('whitegrid') # darkgrid, white grid, dark, white and ticks
     custom_cycler = (
-        cycler(color=['r', 'g', 'b', 'y']) +
-        cycler(linestyle=['-', '--', ':', '-.'])
+        cycler(color=['r', 'b', 'g', 'k', 'm']) +
+        cycler(linestyle=['-', '--', '-.', '-', "--"]) +
+        cycler(marker=["o", "D", "v", ">", "s"])
     )
-    plt.rc("lines", linewidth=4)    # line width
-    plt.rc('axes', titlesize=18)     # fontsize of the axes title
+    plt.rc("lines", linewidth=3, mew=4)    # line width, marker size, marker face color
+    plt.rc('axes', titlesize=16)     # fontsize of the axes title
     plt.rc('axes', labelsize=14)    # fontsize of the x and y labels
     plt.rc("axes", prop_cycle=custom_cycler) # define a cycler of colours and linestyle
-    plt.rc('xtick', labelsize=13)    # fontsize of the tick labels
-    plt.rc('ytick', labelsize=13)    # fontsize of the tick labels
-    plt.rc('legend', fontsize=13)    # legend fontsize
-    plt.rc('font', size=13)          # controls default text sizes
+    plt.rc('xtick', labelsize=12)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=12)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=11)    # legend fontsize
+    plt.rc('font', size=11)          # controls default text sizes
     #define font family to use for all text
     mpl.rcParams['font.family'] = 'serif'
 
